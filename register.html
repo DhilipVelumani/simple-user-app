@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Application</title>
+    <link rel="SHORTCUT ICON" href="./resources/user-icon.ico" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./resources/css/font-awesome.css" />
+    <link rel="stylesheet" href="./resources/style.css" />
+    <script src="user-service.js"></script>
+</head>
+<body>
+
+<div class="container">
+  
+  <img class="header-icon" src="./resources/user-icon.png" /> 
+  <span class="display-3">User Application</span>
+</div>
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="./index.html">User Application</a>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="./login.html">Login</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="./register.html">Register</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="container">
+  <br/><br/>
+  <div class="alert alert-success alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>Success!</strong> User created successfully!!.
+  </div>
+  <div class="alert alert-danger alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>Danger!</strong> Please review invalid fields!
+  </div>
+  <div class="alert alert-warning alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>Warning!</strong> <span class="message"></span>
+  </div>
+
+  <h2>Create New user</h2>
+  <form novalidate id="createUserForm">
+    <div class="form-group">
+      <label for="firstname">First Name *</label>
+      <input type="text" class="form-control" id="firstname" placeholder="Enter First name" name="firstname" required>
+      <label class="err-msg text-danger firstName-error-msg" ></label>
+    </div>
+    <div class="form-group">
+      <label for="lastname">Last Name *</label>
+      <input type="text" class="form-control" id="lastname" placeholder="Enter Last Name" name="lastname" required>
+      <label class="err-msg text-danger lastName-error-msg" ></label>
+    </div>
+    <div class="form-group">
+      <label for="email">Email *</label>
+      <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" required>
+      <label class="err-msg text-danger email-error-msg" ></label>
+    </div>
+    <div class="form-group">
+      <label for="mobNum">Mobile Number *</label>
+      <input type="text" class="form-control" id="mobNum" placeholder="Enter Mobile Num" name="mobNum" required>
+      <label class="err-msg text-danger mobNum-error-msg" ></label>
+    </div>
+    <div class="form-group">
+      <label for="password">Password *</label>
+      <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" required>
+      <label class="err-msg text-danger password-error-msg" ></label>
+    </div>
+    <button type="button" class="btn btn-primary" onclick="createNewUser()">Submit</button>
+  </form>
+</div>
+
+<script>
+var userList = [];
+$(document).ready(function(){
+   getUsersLists();
+})
+function getUsersLists(){
+    $('#userTable tbody').html('');
+     userList = getAllUsers();
+    console.log('userList : ', userList);
+}
+function createNewUser(){
+  console.log('inside createNewUser function');
+  var createUserForm = document.getElementById('createUserForm');
+  console.log(createUserForm.firstname.value);
+  $('.err-msg').html('');
+  $('.alert').hide();
+  var user = {
+    firstName : createUserForm.firstname.value,
+    lastName : createUserForm.lastname.value,
+    mobNum: createUserForm.mobNum.value,
+    email: createUserForm.email.value,
+    password: createUserForm.password.value,
+    type: "normal"
+  }
+  console.log('user: ', user);
+  var flag = true;
+  if(!user.firstName){
+    flag = false;
+    $('.err-msg.firstName-error-msg').html('First Name is required!')
+  }
+  if(!user.lastName){
+    flag = false;
+    $('.err-msg.lastName-error-msg').html('Last Name is required!')
+  }
+  if(!user.mobNum){
+    flag = false;
+    $('.err-msg.mobNum-error-msg').html('Mobile Number is required!')
+  }
+  if(!user.email){
+    var email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+    
+    if(!email_regex.test(user.email)){
+      flag = false;
+      $('.err-msg.email-error-msg').html('Email is invalid!')
+    }    
+  }
+  if(!user.password){
+    flag = false;
+    $('.err-msg.password-error-msg').html('Password is required!')
+  }
+
+  if(flag){
+    var result = createUser(user);
+    if(result.error){
+      $('.alert.alert-warning').show();
+      $('.alert.alert-warning .message').html(result.message);
+      return;
+    }
+    //alert('User created successfully!!');
+    $('.alert.alert-success').show();
+    createUserForm.reset();
+  }
+  else{
+    //alert('Form Invalid!!');
+    $('.alert.alert-danger').show();
+  }
+}
+</script>
+</body>
+</html>

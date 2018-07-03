@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Application</title>
+    <link rel="SHORTCUT ICON" href="./resources/user-icon.ico" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./resources/css/font-awesome.css" />
+    <link rel="stylesheet" href="./resources/style.css" />
+    <script src="user-service.js"></script>
+</head>
+<body>
+
+<div class="container">
+  
+  <img class="header-icon" src="./resources/user-icon.png" /> 
+  <span class="display-3">User Application</span>
+</div>
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="./index.html">User Application</a>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link"><span>Welcome </span><span id="username"></span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" onclick="logoutUser()">Logout</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container"><br>
+    <h3>User List:</h3>
+    
+  <table id="userTable" class="table table-hover table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Email</th>
+        <th>MobNum</th>
+        <th>Password</th>
+        <th>Type</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+<script>
+var userList = [];
+
+$(document).ready(function(){
+   getUserDetail();
+   getUsersLists();
+})
+
+function getUserDetail(){
+    var loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    if(!loggedUser){
+        logoutUser();
+        return;
+    }
+    else if(!(loggedUser.type == 'admin')){
+        window.location.href="./home.html";
+    }
+    $('#username').html(loggedUser.firstName+' '+loggedUser.lastName);
+}
+function getUsersLists(){
+    $('#userTable tbody').html('');
+     userList = getAllUsers();
+   //tablevalues .a.value =  userList.firstName;
+    console.log('userList : ', userList);
+    //$('#a').val(userList.firstName);
+
+    for(var i = 0;i<userList.length;i++){
+        console.log(userList[i].firstName);
+
+        $('#userTable tbody').append(`<tr>
+            <td>`+userList[i].firstName+`</td>
+            <td>`+userList[i].lastName+`</td>
+            <td>`+userList[i].email+`</td>
+            <td>`+userList[i].mobNum+`</td>
+            <td>`+userList[i].password+`</td>
+            <td>`+userList[i].type+`</td>
+            <td>
+                <i class="fa fa-pencil text-primary" aria-hidden="true" onclick="EditUser('`+userList[i].email+`')"></i>|
+                <i class="fa fa-trash text-danger" aria-hidden="true" onclick="DeleteUser('`+userList[i].email+`')"></i></td>
+            </tr>`);
+
+    }
+}
+function EditUser(email){
+    localStorage.setItem('editUserEmail',email);
+    window.location.href="./edit-user.html";
+}
+function DeleteUser(email){
+    deleteUser(email);
+    getUsersLists();
+}
+
+function logoutUser(){
+    localStorage.removeItem('loggedUser');
+    window.location.href="./login.html";
+}
+</script>
+</body>
+</html>
