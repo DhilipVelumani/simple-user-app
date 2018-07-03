@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Application</title>
+    <link rel="SHORTCUT ICON" href="./resources/user-icon.ico" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./resources/css/font-awesome.css" />
+    <link rel="stylesheet" href="./resources/style.css" />
+    <script src="user-service.js"></script>
+</head>
+<body>
+
+<div class="container">
+  
+  <img class="header-icon" src="./resources/user-icon.png" /> 
+  <span class="display-3">User Application</span>
+</div>
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="./index.html">User Application</a>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="./login.html">Login</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="./register.html">Register</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="container">
+  <br/><br/>
+  <div class="alert alert-danger alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>Danger!</strong> INVAILD EMAIL OR PASSWORD!
+  </div>
+  <div class="alert alert-success alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>Login Success!</strong> 
+  </div>
+  <h2>Login</h2>
+  <form novalidate id="UserLoginForm">
+   
+    <div class="form-group">
+      <label for="email">Email *</label>
+      <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" required>
+      <label class="err-msg text-danger email-error-msg" ></label>
+    </div>
+   
+    <div class="form-group">
+      <label for="password">Password *</label>
+      <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" required>
+      <label class="err-msg text-danger password-error-msg" ></label>
+    </div>
+    <button type="button" class="btn btn-primary" onclick="loginUser()">Submit</button>
+  </form>
+</div>
+<script>
+function loginUser(){
+    $('.err-msg').html('');
+    $('.alert').hide();
+    var validForm=true;
+    console.log('email value=', UserLoginForm.email.value);
+    console.log('password value=', UserLoginForm.password.value);
+
+    var user = {
+        email: UserLoginForm.email.value,
+        password:  UserLoginForm.password.value,
+    }
+    console.log('user: ' , user);
+    var email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+    if(!email_regex.test(user.email)){
+        console.log('invalid email');
+        $('.err-msg.email-error-msg').html('Please enter a valid email');
+        validForm = false;
+    }
+    if(!user.password.length){
+        console.log('invalid password');
+        $('.err-msg.password-error-msg').html('Password cannot be empty!!');
+        validForm = false;
+    }
+    if(!validForm){
+        return;
+    }
+
+    var flag = false;
+    var userList = JSON.parse(localStorage.getItem('UserList'));
+
+    var userIsAdmin = false;
+    userList.filter(function(item){
+        
+        if(item.email === user.email && item.password===user.password)
+        {
+            flag = true;
+            userIsAdmin = item.type=='admin'?true:false;
+            localStorage.setItem('loggedUser',JSON.stringify(item));
+            
+        }
+    });
+    if(flag){
+        $('.alert.alert-success').show()
+        if(userIsAdmin){
+            window.location.href="./index.html";
+        }
+        else{
+            window.location.href="./home.html";
+        }
+        return false;
+        }
+    else{
+        $('.alert.alert-danger').show()
+    }
+}
+</script>
+</body>
+</html>
