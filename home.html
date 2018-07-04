@@ -31,6 +31,11 @@
       <li class="nav-item">
         <a class="nav-link" onclick="logoutUser()">Logout</a>
       </li>
+       <li class="nav-item">
+            <a class="nav-link" onclick="EditUser()">Edit<i class="fa fa-pencil text-primary" aria-hidden="true" ></i></a> 
+           
+      
+      </li>
     </ul>
   </div>
 </nav>
@@ -51,12 +56,13 @@
     </div>
 </div>
 <script>
+ var loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
 var userList = [];
 $(document).ready(function(){
    getUserDetail();
 })
 function getUserDetail(){
-    var loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+   
     if(!loggedUser){
         logoutUser();
         return;
@@ -69,11 +75,17 @@ function getUserDetail(){
     $('#email').html(loggedUser.email);
     $('#mobNum').html(loggedUser.mobNum);
 }
-
+ ;
 function logoutUser(){
     localStorage.removeItem('loggedUser');
     window.location.href="./login.html";
 }
+function EditUser(){
+   localStorage.setItem('editUserEmail',loggedUser.email);
+     // console.log('userList : ', loggedUser.email);
+  window.location.href="./updateUser.html";
+}
+ //
 </script>
 </body>
 </html>

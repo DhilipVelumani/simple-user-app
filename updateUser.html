@@ -45,7 +45,7 @@
   </div>
 
   <h2>Update user</h2>
-  <form novalidate id="createUserForm">
+  <form novalidate id="UpdateUserForm">
     <div class="form-group">
       <label for="firstname">First Name *</label>
       <input type="text" class="form-control" id="firstname" placeholder="Enter First name" name="firstname" required>
@@ -57,11 +57,6 @@
       <label class="err-msg text-danger lastName-error-msg" ></label>
     </div>
     <div class="form-group">
-      <label for="email">Email *</label>
-      <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" required>
-      <label class="err-msg text-danger email-error-msg" ></label>
-    </div>
-    <div class="form-group">
       <label for="mobNum">Mobile Number *</label>
       <input type="text" class="form-control" id="mobNum" placeholder="Enter Mobile Num" name="mobNum" required>
       <label class="err-msg text-danger mobNum-error-msg" ></label>
@@ -71,11 +66,74 @@
       <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" required>
       <label class="err-msg text-danger password-error-msg" ></label>
     </div>
-    <button type="button" class="btn btn-primary" onclick="createNewUser()">Submit</button>
+    <button type="button" class="btn btn-primary" onclick="updateUserr()">Submit</button>
   </form>
 </div>
 
 <script>
+
+  var UserEmail = localStorage.getItem('editUserEmail');
+  var updateForm = document.getElementById('UpdateUserForm');
+    var userList = JSON.parse(localStorage.getItem('UserList'));
+    for(var i = 0 ;i<userList.length;i++){
+        if(UserEmail===userList[i].email)
+        {
+            updateForm.firstname.value = userList[i].firstName;
+                updateForm.lastname.value = userList[i].lastName;
+                updateForm.mobNum.value = userList[i].mobNum;
+                updateForm.password.value = userList[i].password;
+        }
+    }
+function updateUserr(){
+    console.log('inside update function');
+    console.log(UpdateUserForm.firstname.value);
+    $('.err-msg').html('');
+    $('.alert').hide();
+
+    var user = {
+        firstName : UpdateUserForm.firstname.value,
+        lastName : UpdateUserForm.lastname.value,
+        mobNum: UpdateUserForm.mobNum.value,
+        email: UserEmail,
+        password: UpdateUserForm.password.value,
+
+    }
+    console.log('user: ', user);
+    var flag = true;
+    if(!user.firstName){
+    flag = false;
+    $('.err-msg.firstName-error-msg').html('First Name is required!')
+    }
+    if(!user.lastName){
+    flag = false;
+    $('.err-msg.lastName-error-msg').html('Last Name is required!')
+    }
+    if(!user.mobNum){
+    flag = false;
+    $('.err-msg.mobNum-error-msg').html('Mobile Number is required!')
+    }
+
+    if(!user.password){
+    flag = false;
+    $('.err-msg.password-error-msg').html('Password is required!')
+    }
+
+    if(flag){
+        var result = updateUser(user);
+        /* if(result.error){
+                console.log('user: ', user);
+            $('.alert.alert-warning').show();
+            $('.alert.alert-warning .message').html(result.message);
+            return;
+        }*/
+        //alert('User created successfully!!');
+        $('.alert.alert-success').show();
+    }
+    else{
+        //alert('Form Invalid!!');
+        $('.alert.alert-danger').show();
+    }
+}
 </script>
 </body>
 </html>
