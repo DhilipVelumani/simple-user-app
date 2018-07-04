@@ -99,7 +99,8 @@ function getUsersLists(){
 }
 function EditUser(email){
     localStorage.setItem('editUserEmail',email);
-    window.location.href="./edit-user.html";
+      //console.log('userList : ', email);
+   window.location.href="./updateUser.html";
 }
 function DeleteUser(email){
     deleteUser(email);
